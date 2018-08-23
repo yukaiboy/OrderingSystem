@@ -1,8 +1,11 @@
 package com.yukaiboy.orderingsystem;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,13 +16,29 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.DiskLogAdapter;
+import com.orhanobut.logger.Logger;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static SharedPreferences g_SharedPreferences;
+    public static FragmentManager g_FragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Logger.addLogAdapter(new AndroidLogAdapter());
+        Logger.addLogAdapter(new DiskLogAdapter());
+
+        g_SharedPreferences = getSharedPreferences("AppSetting", MODE_PRIVATE);
+        g_FragmentManager = getSupportFragmentManager();
+        //將ContactFragment加入主要畫面
+        Tools.AddIndexFragment(g_FragmentManager, IndexFragment.newInstance());
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -81,9 +100,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            Tools.SwapFragment(g_FragmentManager,IndexFragment.newInstance());
         } else if (id == R.id.nav_gallery) {
-
+            Tools.SwapFragment(g_FragmentManager,AboutFragment.newInstance());
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
